@@ -139,7 +139,7 @@ public class ConsoleMenu {
     }
 
     private PaymentMethod createCryptoWalletPayment(){
-        System.out.println("Crypto wallet key:");
+        System.out.println("Crypto wallet key (from 12 to 24 digits):");
         String key = scanner.nextLine();
 
         System.out.println("Crypto wallet balance:");

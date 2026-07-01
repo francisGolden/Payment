@@ -15,7 +15,7 @@ public class CryptoWalletPayment extends PaymentMethod{
     @Override
     public PaymentResult processPayment(double amount){
         if (amount > balance) return new PaymentResult(false, "Not enough funds");
-        if (key.isEmpty()) return new PaymentResult(false, "Invalid wallet key");
+        if (key.length() < 12 || key.length() > 24) return new PaymentResult(false, "Invalid wallet key");
         balance -= amount;
         return new PaymentResult(true, "Paid " + amount + " using crypto wallet");
     }
