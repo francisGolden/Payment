@@ -1,5 +1,7 @@
 package org.example.model;
 
+import org.example.config.AppConfig;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,11 +31,16 @@ public class Order {
 
         this.applyDiscount(new FixedAmountDiscount("save10", 10));
         System.out.println("Discount found: " + discount.getCode());
+
         double sum = 0;
         for (OrderItem item: items){
             sum += item.calculateTotal();
         }
-        return discount.apply(sum);
+
+        double taxRate = AppConfig.getInstance().getTaxRate();
+        double afterDiscount = discount.apply(sum);
+
+        return afterDiscount + (afterDiscount * taxRate);
     }
 
     public void markAsPaid(){
