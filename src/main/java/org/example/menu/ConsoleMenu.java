@@ -1,12 +1,11 @@
 package org.example.menu;
 
 import org.example.config.AppConfig;
+import org.example.model.FixedAmountDiscount;
 import org.example.model.Order;
 import org.example.model.OrderItem;
 import org.example.model.PaymentResult;
-import org.example.payment.PaymentMethod;
-import org.example.payment.PaymentMethodFactory;
-import org.example.payment.PaymentProcessor;
+import org.example.payment.*;
 
 import java.util.Scanner;
 
@@ -44,11 +43,17 @@ public class ConsoleMenu {
         currentOrder = Order.builder()
                 .customerName(customerName)
                 .build();
+
         System.out.println("Order created for " + customerName);
     }
 
     private void addItem(){
-        // TODO: check if order exists
+        if (currentOrder == null){
+            System.out.println("Cannot add item to an order that does not exist");
+            return;
+        }
+
+        System.out.println(currentOrder);
 
         System.out.println("Item name:");
         String itemName = scanner.nextLine();
@@ -64,7 +69,10 @@ public class ConsoleMenu {
     }
 
     private void viewOrder(){
-        // TODO: check if order exists
+        if (currentOrder == null){
+            System.out.println("Cannot view an order that does not exist.");
+            return;
+        }
 
         System.out.println("Customer: " + currentOrder.getCustomerName());
         System.out.println("Status: " +  currentOrder.getStatus());
@@ -78,7 +86,10 @@ public class ConsoleMenu {
     }
 
     private void payOrder(){
-        // TODO: check if order exists
+        if (currentOrder == null){
+            System.out.println("Cannot pay an order that does not exist.");
+            return;
+        }
 
         System.out.println("""
                 Select payment method:
@@ -109,14 +120,21 @@ public class ConsoleMenu {
         return PaymentMethodFactory.createCreditCardPayment(cardNumber,cardHolderName);
     }
 
-    private  PaymentMethod createPaypalPayment(){
-        // TODO
-        return null;
+    private PaymentMethod createPaypalPayment(){
+        System.out.println("Email:");
+        String email = scanner.nextLine();
+
+        return new PaypalPayment(email);
     }
 
     private PaymentMethod createGiftCardPayment(){
-        // TODO
-        return null;
+        System.out.println("Gift card code:");
+        String code = scanner.nextLine();
+
+        System.out.println("Gift card balance:");
+        double balance = Double.parseDouble(scanner.nextLine());
+
+        return new GiftCardPayment(code, balance);
     }
 
     private void printMenu(){
