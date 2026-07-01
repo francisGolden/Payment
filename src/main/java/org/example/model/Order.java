@@ -1,5 +1,7 @@
 package org.example.model;
 
+import org.example.config.AppConfig;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,17 +18,36 @@ public class Order {
     }
 
     public void addItem(OrderItem item){
-        // TODO: prevent adding items if order is already paid
+        if (status == OrderStatus.PAID) {
+            System.out.println("Item already paid");
+            return;
+        }
         items.add(item);
     }
 
     public double calculateTotal(){
         // TODO: calculate total from all order items (including discounts)
-        return 0;
+        System.out.println("Looking for discounts...");
+
+        this.applyDiscount(new FixedAmountDiscount("save10", 10));
+        System.out.println("Discount found: " + discount.getCode());
+
+        double sum = 0;
+        for (OrderItem item: items){
+            sum += item.calculateTotal();
+        }
+
+        double taxRate = AppConfig.getInstance().getTaxRate();
+        double afterDiscount = discount.apply(sum);
+
+        return afterDiscount * (1 + taxRate);
     }
 
     public void markAsPaid(){
-        // TODO: validate order is not empty
+        if (items.isEmpty()) {
+            System.out.println("No items in the order.");
+            return;
+        }
         this.status = OrderStatus.PAID;
     }
 
@@ -62,7 +83,8 @@ public class Order {
             return this;
         }
         public Order build(){
-            // TODO: validate customerName
+            if (this.customerName.isEmpty()) throw new IllegalStateException("Customer name cannot be empty.");
+            if (this.customerName.length() < 2) throw new IllegalStateException("Customer name too short.");
             return new Order(this);
         }
     }

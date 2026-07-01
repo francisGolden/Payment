@@ -4,9 +4,7 @@ import org.example.config.AppConfig;
 import org.example.model.Order;
 import org.example.model.OrderItem;
 import org.example.model.PaymentResult;
-import org.example.payment.PaymentMethod;
-import org.example.payment.PaymentMethodFactory;
-import org.example.payment.PaymentProcessor;
+import org.example.payment.*;
 
 import java.util.Scanner;
 
@@ -44,11 +42,17 @@ public class ConsoleMenu {
         currentOrder = Order.builder()
                 .customerName(customerName)
                 .build();
+
         System.out.println("Order created for " + customerName);
     }
 
     private void addItem(){
-        // TODO: check if order exists
+        if (currentOrder == null){
+            System.out.println("Cannot add item to an order that does not exist");
+            return;
+        }
+
+        System.out.println(currentOrder);
 
         System.out.println("Item name:");
         String itemName = scanner.nextLine();
@@ -64,7 +68,10 @@ public class ConsoleMenu {
     }
 
     private void viewOrder(){
-        // TODO: check if order exists
+        if (currentOrder == null){
+            System.out.println("Cannot view an order that does not exist.");
+            return;
+        }
 
         System.out.println("Customer: " + currentOrder.getCustomerName());
         System.out.println("Status: " +  currentOrder.getStatus());
@@ -78,13 +85,17 @@ public class ConsoleMenu {
     }
 
     private void payOrder(){
-        // TODO: check if order exists
+        if (currentOrder == null){
+            System.out.println("Cannot pay an order that does not exist.");
+            return;
+        }
 
         System.out.println("""
                 Select payment method:
                 1. Credit Card
                 2. PayPal
                 3. Gift Card
+                4. Crypto Wallet
                 """);
         int option = Integer.parseInt(scanner.nextLine());
 
@@ -92,6 +103,7 @@ public class ConsoleMenu {
             case 1 -> createCreditCardPayment();
             case 2 -> createPaypalPayment();
             case 3 -> createGiftCardPayment();
+            case 4 -> createCryptoWalletPayment();
             default -> throw new IllegalArgumentException("Invalid payment method");
         };
 
@@ -109,14 +121,31 @@ public class ConsoleMenu {
         return PaymentMethodFactory.createCreditCardPayment(cardNumber,cardHolderName);
     }
 
-    private  PaymentMethod createPaypalPayment(){
-        // TODO
-        return null;
+    private PaymentMethod createPaypalPayment(){
+        System.out.println("Email:");
+        String email = scanner.nextLine();
+
+        return new PaypalPayment(email);
     }
 
     private PaymentMethod createGiftCardPayment(){
-        // TODO
-        return null;
+        System.out.println("Gift card code:");
+        String code = scanner.nextLine();
+
+        System.out.println("Gift card balance:");
+        double balance = Double.parseDouble(scanner.nextLine());
+
+        return new GiftCardPayment(code, balance);
+    }
+
+    private PaymentMethod createCryptoWalletPayment(){
+        System.out.println("Crypto wallet key (from 12 to 24 digits):");
+        String key = scanner.nextLine();
+
+        System.out.println("Crypto wallet balance:");
+        double balance = Double.parseDouble(scanner.nextLine());
+
+        return new CryptoWalletPayment(key, balance);
     }
 
     private void printMenu(){
