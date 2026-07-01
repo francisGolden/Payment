@@ -7,7 +7,7 @@ public class CryptoWalletPayment extends PaymentMethod{
     private double balance;
 
     public CryptoWalletPayment(String key, double balance) {
-        super("GiftCard");
+        super("CryptoWallet");
         this.key = key;
         this.balance = balance;
     }
