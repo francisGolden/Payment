@@ -40,7 +40,7 @@ public class Order {
         double taxRate = AppConfig.getInstance().getTaxRate();
         double afterDiscount = discount.apply(sum);
 
-        return afterDiscount + (afterDiscount * taxRate);
+        return afterDiscount * (1 + taxRate);
     }
 
     public void markAsPaid(){
