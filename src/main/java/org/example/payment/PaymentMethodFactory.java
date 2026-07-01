@@ -14,6 +14,6 @@ public class PaymentMethodFactory {
     }
 
     public static PaymentMethod createCryptoWalletPayment(String key, double balance){
-        return new GiftCardPayment(key, balance);
+        return new CryptoWalletPayment(key, balance);
     }
 }
