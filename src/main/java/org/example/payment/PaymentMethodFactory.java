@@ -12,4 +12,8 @@ public class PaymentMethodFactory {
     public static PaymentMethod createGiftCardPayment(String code, double balance){
         return new GiftCardPayment(code, balance);
     }
+
+    public static PaymentMethod createCryptoWalletPayment(String key, double balance){
+        return new GiftCardPayment(key, balance);
+    }
 }

@@ -95,6 +95,7 @@ public class ConsoleMenu {
                 1. Credit Card
                 2. PayPal
                 3. Gift Card
+                4. Crypto Wallet
                 """);
         int option = Integer.parseInt(scanner.nextLine());
 
@@ -102,6 +103,7 @@ public class ConsoleMenu {
             case 1 -> createCreditCardPayment();
             case 2 -> createPaypalPayment();
             case 3 -> createGiftCardPayment();
+            case 4 -> createCryptoWalletPayment();
             default -> throw new IllegalArgumentException("Invalid payment method");
         };
 
@@ -134,6 +136,16 @@ public class ConsoleMenu {
         double balance = Double.parseDouble(scanner.nextLine());
 
         return new GiftCardPayment(code, balance);
+    }
+
+    private PaymentMethod createCryptoWalletPayment(){
+        System.out.println("Crypto wallet key:");
+        String key = scanner.nextLine();
+
+        System.out.println("Crypto wallet balance:");
+        double balance = Double.parseDouble(scanner.nextLine());
+
+        return new CryptoWalletPayment(key, balance);
     }
 
     private void printMenu(){
