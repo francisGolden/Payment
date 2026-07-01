@@ -1,7 +1,6 @@
 package org.example.menu;
 
 import org.example.config.AppConfig;
-import org.example.model.FixedAmountDiscount;
 import org.example.model.Order;
 import org.example.model.OrderItem;
 import org.example.model.PaymentResult;
